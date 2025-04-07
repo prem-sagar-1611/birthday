@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Happy Birthday Sushanth</title>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Open+Sans&display=swap" rel="stylesheet">
+  <style>
+    /* Styles remain unchanged from your original post */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      font-family: 'Open Sans', sans-serif;
+      background: radial-gradient(ellipse at center, #1a2a6c, #b21f1f, #fdbb2d);
+      color: white;
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+      height: 100%;
+    }
+    body.revealed {
+      background: #000 url('https://www.transparenttextures.com/patterns/stardust.png');
+      animation: sparkle-bg 10s infinite alternate;
+    }
+    @keyframes sparkle-bg {
+      0% { background-position: 0 0; }
+      100% { background-position: 100px 100px; }
+    }
+    canvas#falling-stars {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+    .intro-screen {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      z-index: 9999;
+    }
+    body.revealed .intro-screen {
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 1s ease;
+    }
+    .intro-screen h1 {
+      font-family: 'Great Vibes', cursive;
+      font-size: 60px;
+      margin-bottom: 10px;
+      color: #fff;
+    }
+    .intro-screen p {
+      color: #aaa;
+      font-size: 18px;
+      margin-bottom: 20px;
+      opacity: 0;
+      animation: fadeIn 2s ease-in 1.5s forwards;
+    }
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+    .intro-screen button {
+      padding: 15px 30px;
+      font-size: 20px;
+      border: none;
+      border-radius: 10px;
+      background-color: #ff4081;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .intro-screen button:hover {
+      background-color: #e73370;
+    }
+    section {
+      min-height: 100vh;
+      padding: 60px 20px;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+      z-index: 2;
+      opacity: 0;
+      transform: scale(0.98);
+    }
+    body.revealed section {
+      display: flex;
+      animation: zoomFade 2s ease forwards;
+    }
+    @keyframes zoomFade {
+      0% { opacity: 0; transform: scale(0.98); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    .hero h1 {
+      font-family: 'Great Vibes', cursive;
+      font-size: 72px;
+      color: #fff;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 15px rgba(255,255,255,0.9);
+    }
+    .scroll-down {
+      margin-top: 40px;
+      font-size: 20px;
+      color: #fff;
+      text-decoration: none;
+      animation: bounce 2s infinite;
+    }
+    .message {
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 0 35px rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 40px 20px;
+      max-width: 900px;
+      margin: auto;
+    }
+    .message p {
+      font-size: 22px;
+      line-height: 1.8;
+      color: #f1f1f1;
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 48px; }
+      .message p { font-size: 18px; }
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="falling-stars"></canvas>
+
+<div class="intro-screen" id="intro">
+  <h1>🎁 Click to Reveal Surprise</h1>
+  <div><b>For the best experience, wear your earbuds 🎧</b></div>
+  <button onclick="revealSurprise()">Reveal</button>
+</div>
+
+<section class="hero">
+  <div class="hero-content">
+    <h1>Happy Birthday, Sushanth 🎉</h1>
+    <a href="#message-section" class="scroll-down">↓ Scroll Down</a>
+  </div>
+</section>
+
+<section class="message" id="message-section">
+  <p>
+    Today isn't just any day—it's the day the world was gifted with someone who lights up lives without even realizing it.<br><br>
+    You've been a source of inspiration, strength, and laughter.<br>
+    I’m grateful for every moment, every memory, and every smile you’ve brought into my life.<br><br>
+    May this year be filled with love, peace, and everything your heart dreams of.<br><br>
+    <strong>You are cherished. You are celebrated. You are loved.</strong>
+  </p>
+</section>
+
+<!-- YouTube API -->
+<script src="https://www.youtube.com/iframe_api"></script>
+<div id="player" style="display:none;"></div>
+
+<!-- Confetti -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+
+<script>
+  let player;
+  let playerReady = false;
+
+  function onYouTubeIframeAPIReady() {
+    player = new YT.Player('player', {
+      videoId: 'JXb_K5u1Lvo',
+      playerVars: {
+        autoplay: 0,
+        loop: 1,
+        playlist: 'JXb_K5u1Lvo',
+        controls: 0,
+        modestbranding: 1
+      },
+      events: {
+        onReady: function () {
+          playerReady = true;
+        }
+      }
+    });
+  }
+
+  function revealSurprise() {
+    document.body.classList.add('revealed');
+
+    const tryPlay = () => {
+      if (playerReady && player && typeof player.playVideo === 'function') {
+        player.playVideo();
+        player.unMute();
+        fadeInVolume();
+      } else {
+        setTimeout(tryPlay, 200);
+      }
+    };
+    tryPlay();
+
+    for (let i = 0; i < 5; i++) {
+      setTimeout(() => {
+        confetti({
+          particleCount: 150,
+          angle: Math.random() * 360,
+          spread: 360,
+          startVelocity: 20,
+          gravity: 0.4,
+          decay: 0.92,
+          scalar: 1.2,
+          ticks: 240,
+          origin: {
+            x: Math.random(),
+            y: Math.random() * 0.6
+          },
+          zIndex: 9999
+        });
+      }, i * 600);
+    }
+
+    let confettiInterval = setInterval(() => {
+      confetti({
+        particleCount: 70,
+        angle: Math.random() * 360,
+        spread: 300,
+        startVelocity: 18,
+        gravity: 0.5,
+        decay: 0.94,
+        scalar: 1,
+        ticks: 200,
+        origin: {
+          x: Math.random(),
+          y: Math.random() * 0.6
+        },
+        zIndex: 9999
+      });
+    }, 900);
+
+    setTimeout(() => {
+      clearInterval(confettiInterval);
+    }, 5000);
+  }
+
+  function fadeInVolume() {
+    let volume = 0;
+    player.setVolume(volume);
+    const fade = setInterval(() => {
+      volume += 5;
+      if (volume >= 100) {
+        player.setVolume(100);
+        clearInterval(fade);
+      } else {
+        player.setVolume(volume);
+      }
+    }, 200);
+  }
+
+  // Falling stars animation
+  const canvas = document.getElementById("falling-stars");
+  const ctx = canvas.getContext("2d");
+  let width, height;
+  function resize() {
+    width = canvas.width = window.innerWidth;
+    height = canvas.height = window.innerHeight;
+  }
+  window.addEventListener("resize", resize);
+  resize();
+
+  class Star {
+    constructor() { this.reset(); }
+    reset() {
+      this.x = Math.random() * width;
+      this.y = Math.random() * height / 2;
+      this.len = Math.random() * 80 + 50;
+      this.speed = Math.random() * 2 + 1;
+      this.angle = Math.PI / 4;
+      this.opacity = Math.random() * 0.5 + 0.5;
+    }
+    update() {
+      this.x += this.speed * Math.cos(this.angle);
+      this.y += this.speed * Math.sin(this.angle);
+      if (this.x > width || this.y > height) this.reset();
+    }
+    draw() {
+      const grad = ctx.createLinearGradient(this.x, this.y, this.x - this.len, this.y - this.len);
+      grad.addColorStop(0, `rgba(255,255,255,${this.opacity})`);
+      grad.addColorStop(1, "rgba(255,255,255,0)");
+      ctx.beginPath();
+      ctx.strokeStyle = grad;
+      ctx.moveTo(this.x, this.y);
+      ctx.lineTo(this.x - this.len, this.y - this.len);
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    }
+  }
+
+  const stars = Array.from({ length: 10 }, () => new Star());
+
+  function animate() {
+    ctx.clearRect(0, 0, width, height);
+    for (const star of stars) {
+      star.update();
+      star.draw();
+    }
+    requestAnimationFrame(animate);
+  }
+
+  animate();
+</script>
+
+</body>
+</html>
